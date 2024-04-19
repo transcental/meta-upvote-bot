@@ -1,6 +1,10 @@
-import { AllMiddlewareArgs, SlackEventMiddlewareArgs } from '@slack/bolt';
+import { AllMiddlewareArgs, SlackEventMiddlewareArgs } from "@slack/bolt";
 
-const sampleMessageCallback = async ({ context, say }: AllMiddlewareArgs & SlackEventMiddlewareArgs<'message'>) => {
+const sampleMessageCallback = async ({
+  context,
+  say,
+}: AllMiddlewareArgs & SlackEventMiddlewareArgs<"message">) => {
+  console.log("sdfsdflkjfalsdkfj");
   try {
     const greeting = context.matches[0];
     await say(`${greeting}, how are you?`);

@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@slack/bolt": "^3.17.1",
+    "airtable": "^0.12.2",
     "dotenv": "~16.4.5"
   },
   "devDependencies": {

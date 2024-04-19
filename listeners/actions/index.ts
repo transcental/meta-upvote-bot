@@ -1,8 +1,9 @@
-import { App } from '@slack/bolt';
-import sampleActionCallback from './sample-action';
+import { App } from "@slack/bolt";
+import voteCallback from "./vote";
 
 const register = (app: App) => {
-  app.action('sample_action_id', sampleActionCallback);
+  app.action("actionId-upvote", voteCallback);
+  app.action("actionId-downvote", voteCallback);
 };
 
 export default { register };
