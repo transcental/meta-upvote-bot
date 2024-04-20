@@ -3,8 +3,6 @@ import { airtable } from "../../util/airtable";
 import { createInteractiveMessage } from "../../util/createInteractiveMessage";
 
 const messagePosted = async ({ client, event }: any) => {
-  // const { event } = body;
-  // const { type, subtype, user, channel, ts, text } = event;
   if (
     event.channel === process.env.CHANNEL_ID &&
     !event.thread_ts &&
