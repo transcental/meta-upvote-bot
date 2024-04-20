@@ -4,6 +4,8 @@ import {
   SlackActionMiddlewareArgs,
 } from "@slack/bolt";
 import { airtable } from "../../util/airtable";
+import { hashUserId } from "../../util/hashUserID";
+import { createInteractiveMessage } from "../../util/createInteractiveMessage";
 
 const voteCallback = async ({
   payload,
@@ -13,18 +15,65 @@ const voteCallback = async ({
 }: AllMiddlewareArgs & SlackActionMiddlewareArgs<BlockAction>) => {
   try {
     await ack();
-    console.log(payload, body);
-    console.log(body.message.root.ts);
-    if (payload.action_id === "actionId-upvote") {
-      airtable("Table 1")
-        .select({
-          filterByFormula: `{message_id}=${body.message.root.ts}`,
-        })
-        .eachPage(function page(records, fetchNextPage) {
-          console.log(records);
-        });
-    } else if (payload.action_id === "actionId-downvote") {
-    }
+
+    airtable("Table 1")
+      .select({
+        filterByFormula: `{message_id}=${body.message.root.ts}`,
+      })
+      .eachPage(function page(records, fetchNextPage) {
+        const hashedUserId = hashUserId(body.user.id);
+
+        let upvotes = JSON.parse(records[0].fields.upvote.toString());
+        let downvotes = JSON.parse(records[0].fields.downvote.toString());
+        console.log(hashedUserId, records[0], payload.action_id);
+        if (
+          payload.action_id === "actionId-upvote" &&
+          !upvotes.includes(hashedUserId)
+        ) {
+          if (downvotes.includes(hashedUserId)) {
+            downvotes = downvotes.filter(
+              (downvote) => downvote !== hashedUserId
+            );
+          }
+
+          upvotes.push(hashedUserId);
+        } else if (
+          payload.action_id === "actionId-downvote" &&
+          !downvotes.includes(hashedUserId)
+        ) {
+          if (upvotes.includes(hashedUserId)) {
+            upvotes = upvotes.filter((upvote) => upvote !== hashedUserId);
+
+            downvotes.push(hashedUserId);
+          }
+        }
+
+        airtable("Table 1").update(
+          [
+            {
+              id: records[0].id,
+              fields: {
+                upvote: JSON.stringify(upvotes),
+                downvote: JSON.stringify(downvotes),
+              },
+            },
+          ],
+          function (err, records) {
+            if (err) {
+              console.log("Err:", err);
+            }
+            console.log(payload, body);
+            client.chat.update({
+              channel: body.channel.id,
+              ts: body.message.ts,
+              blocks: createInteractiveMessage(
+                upvotes.length,
+                downvotes.length
+              ),
+            });
+          }
+        );
+      });
   } catch (error) {
     console.error(error);
   }
