@@ -25,7 +25,7 @@ const voteCallback = async ({
 
         let upvotes = JSON.parse(records[0].fields.upvote.toString());
         let downvotes = JSON.parse(records[0].fields.downvote.toString());
-        console.log(hashedUserId, records[0], payload.action_id);
+
         if (
           payload.action_id === "actionId-upvote" &&
           !upvotes.includes(hashedUserId)
@@ -43,9 +43,8 @@ const voteCallback = async ({
         ) {
           if (upvotes.includes(hashedUserId)) {
             upvotes = upvotes.filter((upvote) => upvote !== hashedUserId);
-
-            downvotes.push(hashedUserId);
           }
+          downvotes.push(hashedUserId);
         }
 
         airtable(process.env.AIRTABLE_TABLE_NAME).update(
@@ -62,7 +61,7 @@ const voteCallback = async ({
             if (err) {
               console.log("Err:", err);
             }
-            console.log(payload, body);
+
             client.chat.update({
               channel: body.channel.id,
               ts: body.message.ts,
