@@ -16,7 +16,7 @@ const voteCallback = async ({
   try {
     await ack();
 
-    airtable("Table 1")
+    airtable(process.env.AIRTABLE_TABLE_NAME)
       .select({
         filterByFormula: `{message_id}=${body.message.root.ts}`,
       })
@@ -48,7 +48,7 @@ const voteCallback = async ({
           }
         }
 
-        airtable("Table 1").update(
+        airtable(process.env.AIRTABLE_TABLE_NAME).update(
           [
             {
               id: records[0].id,

@@ -10,7 +10,7 @@ const messagePosted = async ({ client, event }: any) => {
     !event.thread_ts &&
     !event.subtype
   ) {
-    airtable("Table 1").create(
+    airtable(process.env.AIRTABLE_TABLE_NAME).create(
       [
         {
           fields: {
