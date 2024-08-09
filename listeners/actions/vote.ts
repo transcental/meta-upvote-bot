@@ -15,7 +15,7 @@ const voteCallback = async ({
 }: AllMiddlewareArgs & SlackActionMiddlewareArgs<BlockAction>) => {
   try {
     await ack();
-
+    console.log(JSON.stringify(body));
     airtable(process.env.AIRTABLE_TABLE_NAME)
       .select({
         filterByFormula: `{message_id}=${body.message.root.ts}`,
