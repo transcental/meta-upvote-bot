@@ -19,7 +19,7 @@ registerListeners(app);
 (async () => {
   try {
     await app.start(process.env.PORT || 3000);
-    console.log("⚡️ Bolt app is running! ⚡️");
+    console.log("⚡️ Bolt app is running! ⚡️", process.env.PORT);
   } catch (error) {
     console.error("Unable to start App", error);
   }
