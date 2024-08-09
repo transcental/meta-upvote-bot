@@ -15,10 +15,15 @@ const voteCallback = async ({
 }: AllMiddlewareArgs & SlackActionMiddlewareArgs<BlockAction>) => {
   try {
     await ack();
-    console.log(JSON.stringify(body));
-    airtable(process.env.AIRTABLE_TABLE_NAME)
+
+    const result = await client.conversations.replies({
+      ts: body.message.ts,
+      channel: body.channel.id,
+    });
+
+    await airtable(process.env.AIRTABLE_TABLE_NAME)
       .select({
-        filterByFormula: `{message_id}=${body.message.root.ts}`,
+        filterByFormula: `{message_id}=${result.messages[0].ts}`,
       })
       .eachPage(function page(records, fetchNextPage) {
         const hashedUserId = hashUserId(body.user.id);
