@@ -33,7 +33,7 @@ const messagePosted = async ({ client, event }: any) => {
     client.chat.postMessage({
       channel: process.env.CHANNEL_ID,
       thread_ts: event.ts,
-      reply_broadcast: true,
+      reply_broadcast: false,
       blocks: createInteractiveMessage(0, 0),
     });
   }
