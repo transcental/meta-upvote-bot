@@ -16,14 +16,9 @@ const voteCallback = async ({
   try {
     await ack();
 
-    const result = await client.conversations.replies({
-      ts: body.message.ts,
-      channel: body.channel.id,
-    });
-
     await airtable(process.env.AIRTABLE_TABLE_NAME)
       .select({
-        filterByFormula: `{message_id}=${result.messages[0].ts}`,
+        filterByFormula: `{message_id}=${body.message.thread_ts}`,
       })
       .eachPage(function page(records, fetchNextPage) {
         const hashedUserId = hashUserId(body.user.id);
