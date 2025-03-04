@@ -1,9 +1,9 @@
 import { App } from "@slack/bolt";
 
-import messagePosted from "./message-posted";
+import newMessage from "./message";
 
 const register = (app: App) => {
-  app.event("message", messagePosted);
+  app.event("message", newMessage);
 };
 
 export default { register };
