@@ -23,7 +23,7 @@ const messageDeleted = async ({ client, event }: {client: WebClient, event: Mess
       await client.chat.delete(
         {
           channel: process.env.CHANNEL_ID,
-          ts: record.fields.vote_ts,
+          ts: record.fields.vote_ts.toString(),
         }
       )
     }
